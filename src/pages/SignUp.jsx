@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg';
 import visibilityIcon from '../assets/svg/visibilityIcon.svg';
+import { toast } from 'react-toastify';
 
 function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +29,6 @@ function SignUp() {
     e.preventDefault();
 
     try {
-      console.log(db);
       const auth = getAuth();
 
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -37,9 +38,15 @@ function SignUp() {
         displayName: name,
       });
 
+      const formDataCopy = { ...formData };
+      delete formDataCopy.password;
+      formDataCopy.timestamp = serverTimestamp();
+
+      await setDoc(doc(db, 'users', user.uid), formDataCopy);
+
       navigate('/');
     } catch (err) {
-      console.log(err);
+      toast.error('something went wrong with registration! :O')
     }
   }
 
