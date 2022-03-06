@@ -8,6 +8,7 @@ function ListingItem({ listing, id }) {
     const [onDelete, setOnDelete] = useState(false);
 
     const deleteMethod = () => {};
+
     return (
         <li className='categoryListing'>
             <Link
@@ -15,7 +16,7 @@ function ListingItem({ listing, id }) {
                 className='categoryListingLink'
             >
                 <img
-                    src={listing.imageUrls[0]}
+                    src={listing.imgUrls[0]}
                     alt={listing.name}
                     className='categoryListingImg'
                 />
@@ -27,7 +28,7 @@ function ListingItem({ listing, id }) {
                     <p className='categoryListingPrice'>
                         $
                         {listing.offer
-                            ? listing.discountedPrice
+                            ? listing.discountPrice
                                   .toString()
                                   .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                             : listing.regularPrice
