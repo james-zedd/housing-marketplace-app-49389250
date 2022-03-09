@@ -8,15 +8,16 @@ import {
 } from 'firebase/storage';
 import { db } from '../firebase.config';
 import { v4 as uuidv4 } from 'uuid';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '../components/Spinner';
 import { toast } from 'react-toastify';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 
-function CreateListing() {
+function EditListing() {
     // eslint-disable-next-line
     const [geolocationEnabled, setGeolocationEnabled] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [listing, setListing] = useState(null);
     const [formData, setFormData] = useState({
         type: 'rent',
         name: '',
@@ -51,6 +52,7 @@ function CreateListing() {
 
     const auth = getAuth();
     const navigate = useNavigate();
+    const params = useParams();
     const isMounted = useRef(true);
 
     const onSubmit = async (e) => {
@@ -169,7 +171,9 @@ function CreateListing() {
         location && (formDataCopy.location = location);
         !formDataCopy.offer && delete formDataCopy.discountPrice;
 
-        const docRef = await addDoc(collection(db, 'listings'), formDataCopy);
+        // Update listing
+        const docRef = doc(db, 'listings', params.listingId);
+        await updateDoc(docRef, formDataCopy);
 
         setLoading(false);
 
@@ -205,6 +209,38 @@ function CreateListing() {
         }
     };
 
+    // Redirect if listing does not belong to logged in user
+    useEffect(() => {
+        if (listing && listing.userRef !== auth.currentUser.uid) {
+            toast.error('Cannot edit listing');
+            navigate('/');
+        }
+    });
+
+    // Fetch listing and populate form
+    useEffect(() => {
+        setLoading(true);
+        const fetchListing = async () => {
+            const docRef = doc(db, 'listings', params.listingId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                setListing(docSnap.data());
+                setFormData({
+                    ...docSnap.data(),
+                    address: docSnap.data().location,
+                });
+                setLoading(false);
+            } else {
+                navigate('/');
+                toast.error('Listing does not exist.');
+            }
+        };
+
+        fetchListing();
+    }, [params.listingId, navigate]);
+
+    // Set userRef to logged in user
     useEffect(() => {
         if (isMounted) {
             onAuthStateChanged(auth, (user) => {
@@ -228,7 +264,7 @@ function CreateListing() {
     return (
         <div className='profile'>
             <header>
-                <p className='pageHeader'>Create a Listing</p>
+                <p className='pageHeader'>Edit Listing</p>
             </header>
 
             <main>
@@ -485,4 +521,4 @@ function CreateListing() {
     );
 }
 
-export default CreateListing;
+export default EditListing;
