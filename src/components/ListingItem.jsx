@@ -4,11 +4,7 @@ import { ReactComponent as DeleteIcon } from '../assets/svg/deleteIcon.svg';
 import bedIcon from '../assets/svg/bedIcon.svg';
 import bathtubIcon from '../assets/svg/bathtubIcon.svg';
 
-function ListingItem({ listing, id }) {
-    const [onDelete, setOnDelete] = useState(false);
-
-    const deleteMethod = () => {};
-
+function ListingItem({ listing, id, onDelete }) {
     return (
         <li className='categoryListing'>
             <Link
@@ -57,7 +53,7 @@ function ListingItem({ listing, id }) {
                 <DeleteIcon
                     className='removeIcon'
                     fill='rgb(231, 76, 60)'
-                    onClick={() => deleteMethod(listing.id, listing.name)}
+                    onClick={() => onDelete()}
                 />
             )}
         </li>
