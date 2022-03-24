@@ -50,7 +50,7 @@ function Listing() {
                 slidesPerView={1}
                 pagination={{ clickable: true }}
                 navigation
-                style={{ height: '300px' }}
+                style={{ height: '500px' }}
             >
                 {listing.imgUrls.map((url, index) => {
                     return (

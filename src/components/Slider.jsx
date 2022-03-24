@@ -59,7 +59,7 @@ function Slider() {
                 <Swiper
                     slidesPerView={1}
                     pagination={{ clickable: true }}
-                    style={{ height: '300px' }}
+                    style={{ height: '500px' }}
                 >
                     {listings.map(({ data, id }) => (
                         <SwiperSlide

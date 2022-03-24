@@ -50,11 +50,15 @@ function CreateListing() {
     } = formData;
 
     const auth = getAuth();
+
     const navigate = useNavigate();
+
     const isMounted = useRef(true);
 
     const onSubmit = async (e) => {
         e.preventDefault();
+
+        console.log('on submit form data', formData);
 
         setLoading(true);
 
@@ -206,7 +210,7 @@ function CreateListing() {
     };
 
     useEffect(() => {
-        if (isMounted) {
+        if (isMounted.current) {
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     setFormData({ ...formData, userRef: user.uid });
@@ -219,7 +223,7 @@ function CreateListing() {
         return () => {
             isMounted.current = false;
         };
-    }, [isMounted, auth, formData, navigate]);
+    }, [isMounted, auth, onAuthStateChanged]);
 
     if (loading) {
         return <Spinner />;
