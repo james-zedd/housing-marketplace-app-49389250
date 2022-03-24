@@ -242,7 +242,7 @@ function EditListing() {
 
     // Set userRef to logged in user
     useEffect(() => {
-        if (isMounted) {
+        if (isMounted.current) {
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     setFormData({ ...formData, userRef: user.uid });
@@ -255,7 +255,7 @@ function EditListing() {
         return () => {
             isMounted.current = false;
         };
-    }, [isMounted, auth, formData, navigate]);
+    }, [isMounted, auth, onAuthStateChanged]);
 
     if (loading) {
         return <Spinner />;
