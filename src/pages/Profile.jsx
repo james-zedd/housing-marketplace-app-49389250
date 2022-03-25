@@ -71,7 +71,7 @@ function Profile() {
 
     const onDelete = async (listingId) => {
         console.log(listingId);
-        if (window.confirm('Are you sure you want to delete this item>')) {
+        if (window.confirm('Are you sure you want to delete this item?')) {
             await deleteDoc(doc(db, 'listings', listingId));
             const updatedListings = listings.filter(
                 (listing) => listing.id !== listingId
