@@ -29,7 +29,7 @@ function Offers() {
                     listingRef,
                     where('offer', '==', true),
                     orderBy('timestamp', 'desc'),
-                    limit(1)
+                    limit(3)
                 );
 
                 // execute query
